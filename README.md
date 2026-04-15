@@ -32,20 +32,6 @@ It features smooth transitions, thumbnails, navigation controls, and a sleek UI 
 
 ---
 
-## 🚀 Getting Started
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/your-username/image-slider.git
-```
-
-### 2. Open the project
-
-Simply open `index.html` in your browser.
-
----
-
 ## 🛠️ Technologies Used
 
 * **HTML5**
