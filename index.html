@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Image Slider / Carousel</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <h1>Image <span>Slider</span></h1>
+  <p class="subtitle"></p>
+
+  <div class="slider-wrapper">
+
+    <div class="slider-container" id="sliderContainer">
+
+      <div class="slide-counter" id="slideCounter">1 / 6</div>
+
+      <!-- SLIDES -->
+      <div class="slide active" data-index="0">
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=820&q=80" alt="Mountains" />
+        <div class="slide-caption">
+          <div class="slide-tag">Nature</div>
+          <div class="slide-title">Majestic Mountain Peaks</div>
+          <div class="slide-desc">Touching the sky above the clouds</div>
+        </div>
+      </div>
+
+      <div class="slide" data-index="1">
+        <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=820&q=80" alt="City" />
+        <div class="slide-caption">
+          <div class="slide-tag">Urban</div>
+          <div class="slide-title">City Lights at Night</div>
+          <div class="slide-desc">A million stories, one skyline</div>
+        </div>
+      </div>
+
+      <div class="slide" data-index="2">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=820&q=80" alt="Beach" />
+        <div class="slide-caption">
+          <div class="slide-tag">Beach</div>
+          <div class="slide-title">Golden Shore Serenity</div>
+          <div class="slide-desc">Where the ocean meets the horizon</div>
+        </div>
+      </div>
+
+      <div class="slide" data-index="3">
+        <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=820&q=80" alt="Forest" />
+        <div class="slide-caption">
+          <div class="slide-tag">Forest</div>
+          <div class="slide-title">Into the Deep Woods</div>
+          <div class="slide-desc">Ancient trees, timeless silence</div>
+        </div>
+      </div>
+
+      <div class="slide" data-index="4">
+        <img src="https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=820&q=80" alt="Stars" />
+        <div class="slide-caption">
+          <div class="slide-tag">Galaxy</div>
+          <div class="slide-title">Stargazing in the Desert</div>
+          <div class="slide-desc">Infinite cosmos above us</div>
+        </div>
+      </div>
+
+      <div class="slide" data-index="5">
+        <img src="https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f?w=820&q=80" alt="Ocean" />
+        <div class="slide-caption">
+          <div class="slide-tag">Ocean</div>
+          <div class="slide-title">Beneath the Waves</div>
+          <div class="slide-desc">A whole world underwater</div>
+        </div>
+      </div>
+
+      <!-- NAV BUTTONS -->
+      <button class="nav-btn btn-prev" id="prevBtn" aria-label="Previous">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="nav-btn btn-next" id="nextBtn" aria-label="Next">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+    </div><!-- end slider-container -->
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-bar-wrapper">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- CONTROLS ROW -->
+    <div class="controls-row">
+      <button class="play-pause-btn" id="playPauseBtn">
+        <svg viewBox="0 0 24 24" id="ppIcon"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        <span id="ppLabel">Pause</span>
+      </button>
+      <div class="dots" id="dotsContainer"></div>
+      <span class="speed-label">4s interval</span>
+    </div>
+
+    <!-- THUMBNAILS -->
+    <div class="thumbnails" id="thumbnails"></div>
+
+  </div>
+
+  <script>
+   const slides = document.querySelectorAll(".slide");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const dotsContainer = document.getElementById("dotsContainer");
+const thumbnailsContainer = document.getElementById("thumbnails");
+const slideCounter = document.getElementById("slideCounter");
+
+let currentIndex = 0;
+
+// CREATE DOTS + THUMBNAILS
+slides.forEach((slide, index) => {
+  // DOTS
+  const dot = document.createElement("button");
+  dot.classList.add("dot");
+  if (index === 0) dot.classList.add("active");
+
+  dot.addEventListener("click", () => {
+    goToSlide(index);
+  });
+
+  dotsContainer.appendChild(dot);
+
+  // THUMBNAILS
+  const thumb = document.createElement("div");
+  thumb.classList.add("thumb");
+  if (index === 0) thumb.classList.add("active");
+
+  const img = slide.querySelector("img").src;
+  thumb.innerHTML = `<img src="${img}" />`;
+
+  thumb.addEventListener("click", () => {
+    goToSlide(index);
+  });
+
+  thumbnailsContainer.appendChild(thumb);
+});
+
+const dots = document.querySelectorAll(".dot");
+const thumbs = document.querySelectorAll(".thumb");
+
+// UPDATE SLIDES
+function updateSlides(newIndex) {
+  slides.forEach((slide, i) => {
+    slide.classList.remove("active", "exit");
+
+    if (i === currentIndex) {
+      slide.classList.add("exit");
+    }
+
+    if (i === newIndex) {
+      slide.classList.add("active");
+    }
+  });
+
+  dots.forEach((dot, i) => {
+    dot.classList.toggle("active", i === newIndex);
+  });
+
+  thumbs.forEach((thumb, i) => {
+    thumb.classList.toggle("active", i === newIndex);
+  });
+
+  slideCounter.textContent = `${newIndex + 1} / ${slides.length}`;
+
+  currentIndex = newIndex;
+}
+
+// NEXT / PREV
+function nextSlide() {
+  let newIndex = (currentIndex + 1) % slides.length;
+  updateSlides(newIndex);
+}
+
+function prevSlide() {
+  let newIndex = (currentIndex - 1 + slides.length) % slides.length;
+  updateSlides(newIndex);
+}
+
+function goToSlide(index) {
+  updateSlides(index);
+}
+
+// BUTTON EVENTS
+nextBtn.addEventListener("click", nextSlide);
+prevBtn.addEventListener("click", prevSlide);
+
+// INIT
+updateSlides(0);
+  </script>
+</body>
+</html>
